@@ -142,7 +142,7 @@ val mimaSettings = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(coreJVM, coreJS)
+  .aggregate(core)
   .settings(commonSettings: _*)
   .settings(
     name := "root",
@@ -151,20 +151,19 @@ lazy val root = project
     publishLocal := (),
     publishArtifact := false)
 
-lazy val core = crossProject
-  .crossType(CrossType.Pure)
+lazy val core = project
   .in(file("core"))
   .settings(commonSettings: _*)
   .settings(
     name := "shims",
 
     libraryDependencies ++= Seq(
-      "org.typelevel" %%% "cats-core"   % CatsVersion,
-      "org.typelevel" %%% "cats-free"   % CatsVersion,
-      "org.scalaz"    %%% "scalaz-core" % ScalazVersion,
+      "org.typelevel" %% "cats-core"   % CatsVersion,
+      "org.typelevel" %% "cats-free"   % CatsVersion,
+      "org.scalaz"    %% "scalaz-core" % ScalazVersion,
 
-      "org.typelevel" %%  "discipline"  % "0.7.3"     % "test",
-      "org.typelevel" %%% "cats-laws"   % CatsVersion % "test"),
+      "org.typelevel" %% "discipline"  % "0.7.3"     % "test",
+      "org.typelevel" %% "cats-laws"   % CatsVersion % "test"),
 
     // cribbed from shapeless
     libraryDependencies ++= Seq(
@@ -185,11 +184,8 @@ lazy val core = crossProject
   )
   .enablePlugins(AutomateHeaderPlugin)
 
-lazy val coreJVM = core.jvm.settings(mimaSettings)
-lazy val coreJS = core.js
-
 // intentionally not in the aggregation
-lazy val scratch = project.dependsOn(coreJVM)
+lazy val scratch = project.dependsOn(core)
 
 enablePlugins(GitVersioning)
 
